@@ -1,0 +1,11 @@
+.spot-page {
+  padding: 1rem;
+  color: white;
+  text-align: center;
+}
+
+.spot-image {
+  width: 80%;
+  border-radius: 12px;
+  margin-top: 1rem;
+}

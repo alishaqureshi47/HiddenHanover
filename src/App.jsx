@@ -1,5 +1,7 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Map from './components/Map.jsx';
 import WeatherBar from './components/WeatherBar.jsx';
+import SpotPage from './components/SpotPage.jsx'; // NEW
 import './App.css';
 import { useEffect, useState } from 'react';
 
@@ -34,11 +36,16 @@ function App() {
 
 
       <main className="main-content">
-
-        <div className="map-container">
-          <Map />
-        </div>
-
+        <Routes>
+          <Route path="/" element={
+            <>
+              <div className="map-container">
+                <Map />
+              </div>
+            </>
+          } />
+          <Route path="/spot/:spotId" element={<SpotPage />} />
+        </Routes>
       </main>
     </div>
   );
