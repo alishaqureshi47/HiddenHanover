@@ -11,6 +11,8 @@ import { Threebox } from 'threebox-plugin';
 import 'threebox-plugin/dist/threebox.css';
 import './Map.css';
 
+import * as THREE from "three"; 
+
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
 function Map() {
@@ -102,6 +104,8 @@ function Map() {
     const map = mapRef.current;
     window.tb = new Threebox(map, map.getCanvas().getContext('webgl'), { defaultLights: true });
 
+    const clickableModels = []; 
+
     spots.forEach((spot) => {
       console.log(`Loading model for: ${spot.name || spot.id}`, spot);
 
@@ -116,11 +120,46 @@ function Map() {
 
       window.tb.loadObj(options, (model) => {
         model.setCoords([spot.lon, spot.lat]);
+
+        // 📌 NEW: attach spotId for navigation
+        model.userData.spotId = spot.id;  
+
+        // 📌 NEW: store in clickableModels for raycasting
+        clickableModels.push(model);
+
         window.tb.add(model);
       });
-      
-      
     });
+
+    // setup raycasting for model clicks
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    map.on("click", (event) => {
+      const canvas = map.getCanvas();
+
+      mouse.x = (event.point.x / canvas.clientWidth) * 2 - 1;
+      mouse.y = -(event.point.y / canvas.clientHeight) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, window.tb.camera);
+
+      const intersects = raycaster.intersectObjects(clickableModels, true);
+
+      if (intersects.length > 0) {
+        const clicked = intersects[0].object;
+
+        let spotObj = clicked;
+        while (spotObj && !spotObj.userData.spotId) {
+          spotObj = spotObj.parent;
+        }
+
+        if (spotObj && spotObj.userData.spotId) {
+          console.log("✅ Clicked spot:", spotObj.userData.spotId);
+          navigate(`/spot/${spotObj.userData.spotId}`);
+        }
+      }
+    });
+
   }, [spots]);
 
   return (
