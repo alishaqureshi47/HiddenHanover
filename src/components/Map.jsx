@@ -9,7 +9,6 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../api/firebase"; 
 import { Threebox } from 'threebox-plugin';
 import 'threebox-plugin/dist/threebox.css';
-import './Map.css';
 
 import * as THREE from "three"; 
 

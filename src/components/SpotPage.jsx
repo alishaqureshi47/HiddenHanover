@@ -28,7 +28,7 @@ function SpotPage() {
 
   return (
     <div className="spot-page">
-      <button onClick={() => navigate('/')}>← Back to Map</button>
+      <button onClick={() => navigate('/map')}>← Back to Map</button>
       <h2>{spot.name}</h2>
       <p>{spot.description}</p>
       <img src={spot.image} alt={spot.name} className="spot-image" />
