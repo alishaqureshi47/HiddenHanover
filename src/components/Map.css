@@ -1,0 +1,13 @@
+.map-container {
+  width: 95%;
+  height: 95%;
+  border-radius: 12px;
+  overflow: hidden;   /* ✅ this makes the corners clip */
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+/* Ensure Mapbox canvas respects border radius */
+.map-container canvas {
+  border-radius: 12px;
+}
