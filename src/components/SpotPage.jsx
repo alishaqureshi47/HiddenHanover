@@ -1,15 +1,24 @@
-// src/components/SpotPage.jsx
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { db } from '../api/firebase';
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import './SpotPage.css';
+
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import { Navigation } from 'swiper/modules';
 
 function SpotPage() {
   const { spotId } = useParams();
   const navigate = useNavigate();
   const [spot, setSpot] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
+  const storage = getStorage();
+
+  // 🔄 Fetch spot data from Firebase
   useEffect(() => {
     const fetchSpot = async () => {
       const docRef = doc(db, "spots", spotId);
@@ -24,21 +33,130 @@ function SpotPage() {
     fetchSpot();
   }, [spotId]);
 
-  if (spot === null) return <p>Spot not found.</p>;
+  // 📤 Handle Image Upload
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      setUploading(true);
+
+      // 📂 Upload to Firebase Storage
+      const storageRef = ref(storage, `spots/${spotId}/${file.name}`);
+      await uploadBytes(storageRef, file);
+
+      // 🌐 Get Download URL
+      const downloadURL = await getDownloadURL(storageRef);
+
+      // 🔄 Update Firestore (push to images array)
+      const docRef = doc(db, "spots", spotId);
+      await updateDoc(docRef, {
+        images: arrayUnion(downloadURL)
+      });
+
+      // ✅ Update local state so the gallery updates without refresh
+      setSpot(prev => ({
+        ...prev,
+        images: prev.images ? [...prev.images, downloadURL] : [downloadURL]
+      }));
+
+      setUploading(false);
+      alert("✅ Image uploaded!");
+    } catch (error) {
+      console.error("❌ Upload failed:", error);
+      setUploading(false);
+    }
+  };
+
+  if (spot === null) return <p style={{ color: "black" }}>Spot not found.</p>;
 
   return (
-    <div className="spot-page">
-      <button onClick={() => navigate('/map')}>Back to Map</button>
-      <h2>{spot.name}</h2>
-      <p>{spot.description}</p>
-      <img src={spot.image} alt={spot.name} className="spot-image" />
-      <iframe
-        src={spot.playlist}
-        width="100%"
-        height="80"
-        allow="encrypted-media"
-        title="Spotify Playlist"
-      ></iframe>
+    <div className="spot-page" style={{ color: "black" }}>
+      {/* 🔙 Back Button */}
+      <button onClick={() => navigate('/map')} className="back-btn">
+        Back to Map
+      </button>
+
+      {/* 📍 Title */}
+      <h1 className="spot-title">📍 {spot.name}</h1>
+
+      {/* 📝 Description */}
+      {spot.description && (
+        <p className="spot-description">{spot.description}</p>
+      )}
+
+      {/* 🖼 Full-width Gallery */}
+      <div className="gallery-section">
+        <div className="gallery-header">
+          <h2>Gallery</h2>
+          <label className="upload-btn">
+            + Add Image
+            <input type="file" accept="image/*" onChange={handleImageUpload} hidden />
+          </label>
+        </div>
+        {uploading && <p className="uploading-text">Uploading...</p>}
+
+        {(spot.images && spot.images.length > 0) || spot.image ? (
+          <Swiper
+            modules={[Navigation]}
+            navigation
+            spaceBetween={10}
+            slidesPerView={1}
+            className="gallery-swiper"
+          >
+            {/* ✅ Show main image first if it exists */}
+            {spot.image && (
+              <SwiperSlide>
+                <img src={spot.image} alt={spot.name} className="gallery-image" />
+              </SwiperSlide>
+            )}
+
+            {/* ✅ Then loop through uploaded images */}
+            {spot.images &&
+              spot.images.map((img, idx) => (
+                <SwiperSlide key={idx}>
+                  <img src={img} alt={`${spot.name} ${idx}`} className="gallery-image" />
+                </SwiperSlide>
+              ))}
+          </Swiper>
+        ) : (
+          <div className="gallery-placeholder">
+            <p>No images yet.</p>
+          </div>
+        )}
+      </div>
+
+      {/* 🎵 Spotify + 📓 Journal */}
+      <div className="bottom-grid">
+        <div className="spotify-section">
+          <h2>🎵 Spotify Playlist</h2>
+          {spot.playlist ? (
+            <iframe
+              src={spot.playlist}
+              width="100%"
+              height="250"
+              allow="encrypted-media"
+              title="Spotify Playlist"
+              style={{ borderRadius: '8px', border: '2px solid black' }}
+            ></iframe>
+          ) : (
+            <p>No playlist added.</p>
+          )}
+        </div>
+
+        <div className="journal-section">
+          <h2>📓 Journal Entries</h2>
+          {spot.journalEntries && spot.journalEntries.length > 0 ? (
+            spot.journalEntries.map((entry, idx) => (
+              <div key={idx} className="journal-entry">
+                <p>{entry}</p>
+              </div>
+            ))
+          ) : (
+            <p>No journal entries yet.</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

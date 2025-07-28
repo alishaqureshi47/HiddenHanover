@@ -21,7 +21,7 @@ function Map({weather, timeOfDay}) {
   const [spots, setSpots] = useState([]);
 
   /*----initialize map and fetch from firebase----*/
-  useEffect(() => {
+  useEffect(() => {  // for map intializing and firebase fetch
     // map initialization
     const map = new mapboxgl.Map({
       container: mapContainerRef.current,
@@ -35,6 +35,13 @@ function Map({weather, timeOfDay}) {
 
     mapRef.current = map;
 
+    map.on('load', () => {
+      applyWeather(map, weather);
+      if (timeOfDay) {
+        map.setConfigProperty('basemap', 'lightPreset', timeOfDay);
+      }
+    });
+
     // loading threebox plug in
     map.on('style.load', () => {
       // to disable labels 
@@ -44,36 +51,6 @@ function Map({weather, timeOfDay}) {
       //   }
       // });
 
-
-      if (weather === "rain") {
-        map.setRain({
-        density: 0.5,
-        intensity: 1.0,
-        color: '#a8adbc',
-        opacity: 0.7,
-        vignette: 1.0,
-        'vignette-color': '#464646',
-        direction: [0, 80],
-        'droplet-size': [2.6, 18.2],
-        'distortion-strength': 0.7,
-        'center-thinning': 0
-      });
-        map.setSnow(null);  // make sure snow turns off
-      } else if (weather === "snow") {
-        map.setSnow({
-          density: 0.5,
-          intensity: 0.9,
-          color: '#ffffff',
-          opacity: 0.9,
-          'flake-size': [2, 8],
-          'distortion-strength': 0.2
-        });
-        map.setRain(null);  // make sure rain turns off
-      } else {
-        // 🚫 turn off all effects
-        map.setRain(null);
-        map.setSnow(null);
-      }
 
       map.addLayer({
         id: "threebox-layer",
@@ -125,7 +102,7 @@ function Map({weather, timeOfDay}) {
   }, []);
 
   /*---- watch for weather changes and update map ----*/
-  useEffect(() => {
+  useEffect(() => { // weather changes
     if (!mapRef.current) return;
 
     const map = mapRef.current;
