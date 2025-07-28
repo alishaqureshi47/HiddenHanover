@@ -10,6 +10,7 @@ import { auth } from "../api/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 
+
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 const storage = getStorage();
 
@@ -22,6 +23,7 @@ function AddSpot({ onClose }) {
   const [images, setImages] = useState([]);
   const [user] = useAuthState(auth);
   const [isPublic, setIsPublic] = useState(true);
+  const [spotifyUrl, setSpotifyUrl] = useState("");   
 
 
   // handle form submit
@@ -56,7 +58,8 @@ function AddSpot({ onClose }) {
       createdAt: new Date(),
       ownerId: user.uid,
       ownerName: user.displayName,
-      isPublic: isPublic
+      isPublic: isPublic,
+      spotifyPlaylist: spotifyUrl 
     });
 
     alert("Spot added successfully!");
@@ -158,6 +161,16 @@ function AddSpot({ onClose }) {
                 ) : (
                   <p className="no-files">No files selected</p>
                 )}
+              </div>
+
+              <div className="playlist">
+                <label>Spotify Playlist URL (optional)</label>
+                <input 
+                  type="text" 
+                  value={spotifyUrl} 
+                  onChange={(e) => setSpotifyUrl(e.target.value)}
+                  placeholder="Paste Spotify playlist link here"
+                />
               </div>
 
               

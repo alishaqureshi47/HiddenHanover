@@ -16,6 +16,7 @@ import { auth } from "./api/firebase";
 
 
 
+
 function App() {
   const [forecastData, setForecastData] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
@@ -86,6 +87,8 @@ function App() {
       
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
+          <Route path="/callback" element={<SpotifyCallback />} />
+
           <Route path="/login" element={<Login />} />
           
           {/* 🌿 Landing Page */}

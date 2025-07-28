@@ -119,6 +119,29 @@
   border: 2px solid black;
 }
 
+.spotify-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.add-playlist-btn {
+  background-color: #1db954;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  width: 32px;
+  height: 32px;
+  border-radius: 2px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.add-playlist-btn:hover {
+  background-color: #17a44d;
+}
+
 /* 📓 Journal Section */
 .journal-section {
   background: white;

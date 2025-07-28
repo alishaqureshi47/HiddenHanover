@@ -11,6 +11,8 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
+import SpotifyEmbed from './SpotifyEmbed';
+
 
 function SpotPage() {
   const { spotId } = useParams();
@@ -143,16 +145,43 @@ function SpotPage() {
       {/* 🎵 Spotify + 📓 Journal */}
       <div className="bottom-grid">
         <div className="spotify-section">
-          <h2>🎵 Spotify Playlist</h2>
-          {spot.playlist ? (
-            <iframe
-              src={spot.playlist}
-              width="100%"
-              height="250"
-              allow="encrypted-media"
-              title="Spotify Playlist"
-              style={{ borderRadius: '8px', border: '2px solid black' }}
-            ></iframe>
+          <div className="spotify-header">
+            <h2>🎵 Spotify Playlist</h2>
+            {!spot.spotifyPlaylist && (
+              <button 
+                className="add-playlist-btn" 
+                onClick={async () => {
+                  const playlistUrl = prompt("🎵 Paste a Spotify playlist URL:");
+
+                  if (playlistUrl) {
+                    try {
+                      // ✅ Update Firestore
+                      await updateDoc(doc(db, "spots", spotId), {
+                        spotifyPlaylist: playlistUrl,
+                      });
+
+                      // ✅ Update local state immediately
+                      setSpots(prevSpots =>
+                        prevSpots.map(s =>
+                          s.id === spotId ? { ...s, spotifyPlaylist: playlistUrl } : s
+                        )
+                      );
+
+                      alert("✅ Playlist added!");
+                    } catch (err) {
+                      console.error("❌ Error saving playlist:", err);
+                      alert("❌ Failed to add playlist.");
+                    }
+                  }
+                }}
+              >
+                +
+              </button>
+            )}
+            <ConnectSpotify />
+          </div>
+          {spot.spotifyPlaylist ? (   
+            <SpotifyEmbed playlistUrl={spot.spotifyPlaylist} />
           ) : (
             <p>No playlist added.</p>
           )}
