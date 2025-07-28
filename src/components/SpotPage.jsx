@@ -1,10 +1,11 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
-import { db } from '../api/firebase';
+import { db, auth } from '../api/firebase';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { useAuthState } from "react-firebase-hooks/auth";
 import './SpotPage.css';
-import { useSpots } from "../context/SpotsContext";  // ✅ use the context
+import { useSpots } from "../context/SpotsContext";  
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -14,8 +15,9 @@ import { Navigation } from 'swiper/modules';
 function SpotPage() {
   const { spotId } = useParams();
   const navigate = useNavigate();
-  const { spots, setSpots } = useSpots();   // ✅ include setSpots from context
+  const { spots, setSpots } = useSpots();   
   const [uploading, setUploading] = useState(false);
+  const [user] = useAuthState(auth);
 
   const storage = getStorage();
 
@@ -23,6 +25,8 @@ function SpotPage() {
   const spot = spots.find(s => s.id === spotId);
 
   if (!spot) return <p style={{ color: "black" }}>Spot not found.</p>;
+
+  const isOwner = user && spot.ownerId === user.uid;
 
   // 📤 Handle Image Upload
   const handleImageUpload = async (e) => {
@@ -45,7 +49,7 @@ function SpotPage() {
         images: arrayUnion(downloadURL)
       });
 
-      // ✅ Update the global spots context so UI updates immediately
+      // ✅ Update context
       setSpots(prevSpots =>
         prevSpots.map(s =>
           s.id === spotId
@@ -59,6 +63,24 @@ function SpotPage() {
     } catch (error) {
       console.error("❌ Upload failed:", error);
       setUploading(false);
+    }
+  };
+
+  // 🔄 Handle Privacy Toggle
+  const handleTogglePrivacy = async () => {
+    try {
+      const docRef = doc(db, "spots", spotId);
+      await updateDoc(docRef, {
+        isPublic: !spot.isPublic
+      });
+
+      setSpots(prevSpots =>
+        prevSpots.map(s =>
+          s.id === spotId ? { ...s, isPublic: !spot.isPublic } : s
+        )
+      );
+    } catch (err) {
+      console.error("❌ Privacy toggle failed:", err);
     }
   };
 
@@ -81,10 +103,12 @@ function SpotPage() {
       <div className="gallery-section">
         <div className="gallery-header">
           <h2>Gallery</h2>
-          <label className="upload-btn">
-            + Add Image
-            <input type="file" accept="image/*" onChange={handleImageUpload} hidden />
-          </label>
+          {isOwner && (
+            <label className="upload-btn">
+              + Add Image
+              <input type="file" accept="image/*" onChange={handleImageUpload} hidden />
+            </label>
+          )}
         </div>
         {uploading && <p className="uploading-text">Uploading...</p>}
 
@@ -96,14 +120,12 @@ function SpotPage() {
             slidesPerView={1}
             className="gallery-swiper"
           >
-            {/* ✅ Show main image first if it exists */}
             {spot.image && (
               <SwiperSlide>
                 <img src={spot.image} alt={spot.name} className="gallery-image" />
               </SwiperSlide>
             )}
 
-            {/* ✅ Then loop through uploaded images */}
             {spot.images &&
               spot.images.map((img, idx) => (
                 <SwiperSlide key={idx}>
@@ -148,6 +170,20 @@ function SpotPage() {
             <p>No journal entries yet.</p>
           )}
         </div>
+      </div>
+
+      <div className="owner-info">
+        {spot.ownerName && (
+          <p className="spot-owner">
+            Created by <strong>{spot.ownerName}</strong> — {spot.isPublic ? "🔓 Public" : "🔒 Private"}
+          </p>
+        )}
+
+        {isOwner && (
+          <button className="privacy-toggle" onClick={handleTogglePrivacy}>
+            {spot.isPublic ? "Make Private 🔒" : "Make Public 🔓"}
+          </button>
+        )}
       </div>
     </div>
   );

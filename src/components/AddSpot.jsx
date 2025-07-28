@@ -6,6 +6,9 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import mapboxgl from "mapbox-gl";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import "./AddSpot.css";
+import { auth } from "../api/firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
+
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 const storage = getStorage();
@@ -17,10 +20,19 @@ function AddSpot({ onClose }) {
   const [lat, setLat] = useState("");
   const [lng, setLng] = useState("");
   const [images, setImages] = useState([]);
+  const [user] = useAuthState(auth);
+  const [isPublic, setIsPublic] = useState(true);
+
 
   // handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+        if (!user) {
+      alert("You must be logged in to add a spot!");
+      return;
+    }
+
 
     try {
       let imageUrls = [];
@@ -40,8 +52,11 @@ function AddSpot({ onClose }) {
       description,
       obj,
       location: { latitude: parseFloat(lat), longitude: parseFloat(lng) },
-      image: imageUrls,
+      images: imageUrls,
       createdAt: new Date(),
+      ownerId: user.uid,
+      ownerName: user.displayName,
+      isPublic: isPublic
     });
 
     alert("Spot added successfully!");
@@ -149,7 +164,14 @@ function AddSpot({ onClose }) {
             </div>
 
             <div className="form-right">
-              <label>Select Location on Map</label>
+
+              <label>Privacy</label>
+              <select value={isPublic} onChange={(e) => setIsPublic(e.target.value === "true")}>
+                <option value="true">🌍 Public</option>
+                <option value="false">🔒 Private</option>
+              </select>
+              
+              <label className="location-head">Select Location on Map</label>
               <p style={{ fontSize: "0.9rem", marginBottom: "5px" }}>
                 📍 Click on the map to set coordinates
               </p>

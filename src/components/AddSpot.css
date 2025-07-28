@@ -181,6 +181,9 @@
   color: #000;
 }
 
+.location-head {
+  margin-top: 15px;
+}
 
 /* Map box */
 #add-spot-map {
@@ -232,3 +235,4 @@
   transform: scale(1.05);
   box-shadow: 0 4px 10px rgba(231, 76, 60, 0.4);
 }
+

@@ -158,5 +158,38 @@
   margin-bottom: 10px;
   color: black;
 }
+.owner-info {
+  display: flex;
+  align-items: center;        /* keeps everything vertically aligned */
+  justify-content: space-between;  /* pushes toggle to the far right */
+  padding: 10px 16px;         /* nice breathing space around */
+  margin-bottom: 12px;        /* space below this section */
+  background: #fafafa;        /* subtle background to separate it */
+  border-radius: 8px;         /* slight rounding for a softer look */
+}
 
+/* text styling */
+.spot-owner {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #222;
+}
 
+/* toggle button styling */
+.privacy-toggle {
+  color: black;
+  background: #f1f1f1;
+  border: 1px solid #53983d;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.privacy-toggle:hover {
+  border: 1px solid #53983d;
+  background: #e4e4e4;
+}
