@@ -1,6 +1,6 @@
 // src/App.jsx
-import { Routes, Route, useLocation } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
 import Landing from './components/Landing.jsx';
 import Map from './components/Map.jsx';
 import SpotPage from './components/SpotPage.jsx';
@@ -9,6 +9,12 @@ import WeatherBar from './components/WeatherBar.jsx';
 import { AnimatePresence, motion, time } from "framer-motion";
 import { getCurrentWeather } from "./api/weather"; 
 import './App.css';
+import Login from "./components/Login.jsx";
+import Header from "./components/Header";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "./api/firebase";
+
+
 
 function App() {
   const [forecastData, setForecastData] = useState([]);
@@ -16,6 +22,17 @@ function App() {
   const location = useLocation();
   const [weather, setWeather] = useState("none");
   const [timeOfDay, setTimeOfDay] = useState("day");
+  const [user] = useAuthState(auth);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user && location.pathname === "/") {
+      navigate("/map");
+    }
+  }, [user, location, navigate]);
+
+  
 
 
   useEffect(() => {
@@ -65,12 +82,11 @@ function App() {
       className="app-container"
       style={{ position: "relative", overflow: "hidden", minHeight: "100vh" }}
     >
-      <header className="header-bar small">
-        <h2>🌿 Hidden Hanover 🌿</h2>
-      </header>
+      {location.pathname !== "/" && <Header user={user} />}
       
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
+          <Route path="/login" element={<Login />} />
           
           {/* 🌿 Landing Page */}
           <Route 
