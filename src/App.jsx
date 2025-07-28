@@ -6,13 +6,41 @@ import Map from './components/Map.jsx';
 import SpotPage from './components/SpotPage.jsx';
 import AddSpot from './components/AddSpot.jsx';
 import WeatherBar from './components/WeatherBar.jsx';
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, time } from "framer-motion";
+import { getCurrentWeather } from "./api/weather"; 
 import './App.css';
 
 function App() {
   const [forecastData, setForecastData] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
   const location = useLocation();
+  const [weather, setWeather] = useState("none");
+  const [timeOfDay, setTimeOfDay] = useState("day");
+
+
+  useEffect(() => {
+    async function fetchWeather() {
+      const data = await getCurrentWeather();
+      if (data) {
+        console.log("🌤 Hanover Weather Data:", data);
+
+        // ✅ Automatically set day or night
+        setTimeOfDay(data.isDay === 1 ? "day" : "night");
+
+        // ✅ Automatically set rain/snow effects
+        const conditionLower = data.condition.toLowerCase();
+        if (conditionLower.includes("rain")) {
+          setWeather("rain");
+        } else if (conditionLower.includes("snow")) {
+          setWeather("snow");
+        } else {
+          setWeather("none");
+        }
+      }
+    }
+    fetchWeather();
+  }, []);
+
 
   // 🌦️ Fetch Weather for the WeatherBar
   useEffect(() => {
@@ -90,9 +118,39 @@ function App() {
                   <WeatherBar forecast={forecastData} />
                 </div>
 
+                <div className="effect-toggle-bar">
+                  <button 
+                    className={weather === "rain" ? "active" : ""} 
+                    onClick={() => setWeather("rain")}
+                  >
+                    🌧 Rain
+                  </button>
+
+                  <button 
+                    className={weather === "snow" ? "active" : ""} 
+                    onClick={() => setWeather("snow")}
+                  >
+                    ❄ Snow
+                  </button>
+
+                  <button 
+                    className={weather === "none" ? "active" : ""} 
+                    onClick={() => setWeather("none")}
+                  >
+                    🚫 Off
+                  </button>
+                </div>
+                
+                <div className="time-toggle-bar">
+                  <button onClick={() => setTimeOfDay("day")}>🌞 Day</button>
+                  <button onClick={() => setTimeOfDay("dawn")}>🌅 Dawn</button>
+                  <button onClick={() => setTimeOfDay("dusk")}>🌆 Dusk</button>
+                  <button onClick={() => setTimeOfDay("night")}>🌙 Night</button>
+                </div>
+
                 <div className="main-content">
                   <div className="map-wrapper">
-                    <Map />
+                    <Map weather={weather} timeOfDay={timeOfDay}/>
                   </div>
 
                   <button
