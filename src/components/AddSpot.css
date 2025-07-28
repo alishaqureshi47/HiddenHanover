@@ -16,60 +16,219 @@
 .modal-content {
   background: white;
   color: black;
-  padding: 20px;
-  border-radius: 12px;
-  width: 400px;
+  padding: 25px;
+  border-radius: 14px;
+  width: 850px;
+  max-width: 95%;
   position: relative;
-  box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+  box-shadow: 0px 8px 24px rgba(0,0,0,0.2);
+  font-family: 'Inter', sans-serif;
 }
 
-/* Close button (top-right) */
+/* Close button */
 .close-btn {
   position: absolute;
-  top: 10px;
-  right: 12px;
+  color: black;
+  top: 12px;
+  right: 15px;
   border: none;
   background: none;
-  font-size: 18px;
+  font-size: 20px;
   cursor: pointer;
 }
 
-/* Form layout */
-.add-spot-form {
+/* Horizontal layout container */
+.form-layout {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  gap: 25px;
+  margin-top: 10px;
+  align-items: stretch;
 }
 
-.add-spot-form input,
+/* Left column (fields) */
+.form-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  justify-content: flex-start;
+}
+
+/* Right column (map) */
+.form-right {
+  margin-top: 0;
+  flex: 1.2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Labels */
+.add-spot-form label {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+/* Inputs, textareas, selects */
+.add-spot-form input[type="text"],
 .add-spot-form textarea,
 .add-spot-form select {
-  padding: 8px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  background-color: #f9f9f9;
+}
+
+.add-spot-form textarea {
+  min-height: 80px;
+}
+
+.add-spot-form input:focus,
+.add-spot-form textarea:focus,
+.add-spot-form select:focus {
+  border-color: #2e7d32;
+  box-shadow: 0 0 4px rgba(46, 125, 50, 0.5);
+  outline: none;
+}
+
+/* Hide default file input */
+.add-spot-form input[type="file"] {
+  display: none;
+}
+
+/* Custom file upload button */
+.file-upload-btn {
+  background-color: #2e7d32;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: bold;
+  display: inline-block;
+  text-align: center;
+  transition: background 0.2s ease;
+}
+
+.file-upload-btn:hover {
+  background-color: #256428;
+}
+
+/* File previews container */
+.file-preview-list {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+/* Individual file preview item */
+.file-preview-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+/* Small thumbnail */
+.file-preview-item img {
+  width: 35px;
+  height: 35px;
+  object-fit: cover;
   border-radius: 6px;
   border: 1px solid #ccc;
 }
 
-/* Buttons */
+/* No file text */
+.no-files {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: #777;
+}
+
+.add-spot-form select {
+  color: black;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  background-color: #f9f9f9;
+  appearance: none;           /* removes the default OS styling */
+  -webkit-appearance: none;   /* Safari */
+  -moz-appearance: none;      /* Firefox */
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27292.4%27%20height%3D%27292.4%27%3E%3Cpath%20fill%3D%27%23666%27%20d%3D%27M287%2069.4a17.6%2017.6%200%2000-24.9%200L146.2%20185.3%2030.3%2069.4A17.6%2017.6%200%20105.4%2094.3l128.5%20128.5c6.9%206.9%2018%206.9%2024.9%200L287%2094.3c6.8-6.9%206.8-18%200-24.9z%27/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+  cursor: pointer;
+}
+
+.add-spot-form select:focus {
+  border-color: #2e7d32;
+  box-shadow: 0 0 4px rgba(46, 125, 50, 0.5);
+  outline: none;
+}
+
+.add-spot-form input,
+.add-spot-form textarea {
+  color: #000;
+}
+
+
+/* Map box */
+#add-spot-map {
+  flex-grow: 1;
+  width: 100%;
+  min-height: 400px; 
+  border-radius: 12px;
+  margin-top: 8px;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Buttons row */
 .form-buttons {
   display: flex;
-  justify-content: space-between;
-  margin-top: 12px;
+  justify-content: flex-end;
+  margin-top: 18px;
+  gap: 12px;
+}
+
+/* Buttons */
+.submit-btn,
+.cancel-btn {
+  padding: 5px 18px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .submit-btn {
   background-color: #2ecc71;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
   color: white;
-  cursor: pointer;
+}
+
+.submit-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(46, 204, 113, 0.4);
 }
 
 .cancel-btn {
   background-color: #e74c3c;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
   color: white;
-  cursor: pointer;
+}
+
+.cancel-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(231, 76, 60, 0.4);
 }

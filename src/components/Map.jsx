@@ -25,7 +25,7 @@ function Map() {
     // map initialization
     const map = new mapboxgl.Map({
       container: mapContainerRef.current,
-      style: "mapbox://styles/mapbox/streets-v12",
+      style: "mapbox://styles/alishaqureshi/cmdmczzue008001s16t2b7ud9",
       center: [-72.28857, 43.70336],
       zoom: 16,
       pitch: 60,
@@ -37,6 +37,13 @@ function Map() {
 
     // loading threebox plug in
     map.on('style.load', () => {
+      // to disable labels 
+      // map.getStyle().layers.forEach((layer) => {
+      //   if (layer.type === 'symbol') {
+      //     map.setLayoutProperty(layer.id, 'visibility', 'none');
+      //   }
+      // });
+
       map.addLayer({
         id: "threebox-layer",
         type: "custom",
@@ -108,10 +115,10 @@ function Map() {
     spots.forEach((spot) => {
       console.log(`Loading model for: ${spot.name || spot.id}`, spot);
 
-      const scale = 0.05;
+      const scale = 0.1;
       const options = {
         obj: spot.obj, 
-        type: "gltf",
+        type: "glb",
         scale: spot.scale || { x: scale, y: scale, z: scale },
         rotation: spot.rotation || { x: 90, y: -90, z: 0 },
         units: "meters"
@@ -120,10 +127,8 @@ function Map() {
       window.tb.loadObj(options, (model) => {
         model.setCoords([spot.lon, spot.lat]);
 
-        // 📌 NEW: attach spotId for navigation
         model.userData.spotId = spot.id;  
 
-        // 📌 NEW: store in clickableModels for raycasting
         clickableModels.push(model);
 
         window.tb.add(model);
