@@ -1,28 +1,27 @@
 // src/components/Map.jsx
 // Alisha Qureshi - 2025
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useNavigate } from 'react-router-dom';
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../api/firebase"; 
 import { Threebox } from 'threebox-plugin';
 import 'threebox-plugin/dist/threebox.css';
-
+import { useSpots } from "../context/SpotsContext";  // ✅ using global spots context
 import * as THREE from "three"; 
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
-function Map({weather, timeOfDay}) {
+function Map({ weather, timeOfDay }) {
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
   const navigate = useNavigate();
-  const [spots, setSpots] = useState([]);
 
-  /*----initialize map and fetch from firebase----*/
-  useEffect(() => {  // for map intializing and firebase fetch
-    // map initialization
+  // ✅ Spots pulled from context
+  const { spots, loading } = useSpots();
+
+  /*---- initialize map ----*/
+  useEffect(() => {  
     const map = new mapboxgl.Map({
       container: mapContainerRef.current,
       style: "mapbox://styles/alishaqureshi/cmdmczzue008001s16t2b7ud9",
@@ -42,16 +41,8 @@ function Map({weather, timeOfDay}) {
       }
     });
 
-    // loading threebox plug in
+    // ✅ Add Threebox layer
     map.on('style.load', () => {
-      // to disable labels 
-      // map.getStyle().layers.forEach((layer) => {
-      //   if (layer.type === 'symbol') {
-      //     map.setLayoutProperty(layer.id, 'visibility', 'none');
-      //   }
-      // });
-
-
       map.addLayer({
         id: "threebox-layer",
         type: "custom",
@@ -65,49 +56,15 @@ function Map({weather, timeOfDay}) {
       });
     });
 
-    // fetch from firebase
-    const fetchSpots = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "spots"));
-
-        if (querySnapshot.empty) {
-          console.warn("No documents found in 'spots' collection.");
-        }
-
-        const data = querySnapshot.docs.map(doc => {
-          const raw = doc.data();
-
-          // check for geopoint
-          if (!raw.location || !raw.location.latitude) {
-            console.error(`Missing GeoPoint for ${doc.id}`, raw);
-          }
-
-          return {
-            id: doc.id,
-            ...raw,
-            lat: raw.location?.latitude || null,
-            lon: raw.location?.longitude || null,
-          };
-        });
-
-        setSpots(data);
-      } catch (err) {
-        console.error("Firebase fetch error:", err);
-      }
-    };
-
-    fetchSpots();
-
+    // ✅ Cleanup when component unmounts
     return () => map.remove();
   }, []);
 
-  /*---- watch for weather changes and update map ----*/
-  useEffect(() => { // weather changes
+  /*---- watch for weather changes ----*/
+  useEffect(() => { 
     if (!mapRef.current) return;
-
     const map = mapRef.current;
 
-    // ✅ Only run if style is loaded
     if (!map.isStyleLoaded()) {
       map.once("styledata", () => {
         applyWeather(map, weather);
@@ -117,9 +74,8 @@ function Map({weather, timeOfDay}) {
     }
   }, [weather]);
 
-  /*---- watch for weather changes and update map ----*/
+  /*---- helper to apply weather ----*/
   const applyWeather = (map, weather) => {
-    // Turn off all effects first
     map.setRain(null);
     map.setSnow(null);
 
@@ -146,88 +102,91 @@ function Map({weather, timeOfDay}) {
         'distortion-strength': 0.2
       });
     }
-  }
+  };
 
-  /*----loading style for tume----*/
+  /*---- watch for time of day ----*/
   useEffect(() => {
     if (mapRef.current && timeOfDay) {
       mapRef.current.setConfigProperty('basemap', 'lightPreset', timeOfDay);
     }
   }, [timeOfDay]);
 
-
-
-  /*----loading 3D models for each spot----*/
+  /*---- add 3D models whenever spots load OR when coming back ----*/
   useEffect(() => {
-    if (!mapRef.current) {
-      console.log("Map not ready yet");
+    if (!mapRef.current) return;
+    if (loading) {
+      console.log("⏳ Waiting for spots...");
       return;
     }
 
     if (spots.length === 0) {
-      console.log("Waiting for Firestore…");
+      console.warn("⚠️ No spots found.");
       return;
     }
 
-    // setting up Threebox
+    console.log(`✅ Loading ${spots.length} spots onto the map.`);
     const map = mapRef.current;
-    window.tb = new Threebox(map, map.getCanvas().getContext('webgl'), { defaultLights: true });
 
-    const clickableModels = []; 
+    // ✅ Ensure Threebox exists for this map instance
+    if (!window.tb) {
+      window.tb = new Threebox(map, map.getCanvas().getContext('webgl'), { defaultLights: true });
+    }
+
+    const clickableModels = [];
 
     spots.forEach((spot) => {
-      console.log(`Loading model for: ${spot.name || spot.id}`, spot);
+      if (!spot.location?.latitude || !spot.location?.longitude) {
+        console.warn(`⚠️ Skipping ${spot.name || spot.id} — no location data`);
+        return;
+      }
 
       const scale = 0.1;
       const options = {
-        obj: spot.obj, 
+        obj: spot.obj,
         type: "glb",
         scale: spot.scale || { x: scale, y: scale, z: scale },
         rotation: spot.rotation || { x: 90, y: -90, z: 0 },
         units: "meters"
       };
 
+      // ✅ Load the model for each spot
       window.tb.loadObj(options, (model) => {
-        model.setCoords([spot.lon, spot.lat]);
-
-        model.userData.spotId = spot.id;  
-
+        model.setCoords([spot.location.longitude, spot.location.latitude]);
+        model.userData.spotId = spot.id;
         clickableModels.push(model);
-
         window.tb.add(model);
       });
     });
 
-    // setup raycasting for model clicks
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
+    // ✅ Raycasting for spot clicks (only set up once)
+    if (!mapRef.current.hasClickListener) {
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
 
-    map.on("click", (event) => {
-      const canvas = map.getCanvas();
+      map.on("click", (event) => {
+        const canvas = map.getCanvas();
+        mouse.x = (event.point.x / canvas.clientWidth) * 2 - 1;
+        mouse.y = -(event.point.y / canvas.clientHeight) * 2 + 1;
 
-      mouse.x = (event.point.x / canvas.clientWidth) * 2 - 1;
-      mouse.y = -(event.point.y / canvas.clientHeight) * 2 + 1;
+        raycaster.setFromCamera(mouse, window.tb.camera);
+        const intersects = raycaster.intersectObjects(clickableModels, true);
 
-      raycaster.setFromCamera(mouse, window.tb.camera);
-
-      const intersects = raycaster.intersectObjects(clickableModels, true);
-
-      if (intersects.length > 0) {
-        const clicked = intersects[0].object;
-
-        let spotObj = clicked;
-        while (spotObj && !spotObj.userData.spotId) {
-          spotObj = spotObj.parent;
+        if (intersects.length > 0) {
+          let clicked = intersects[0].object;
+          while (clicked && !clicked.userData.spotId) {
+            clicked = clicked.parent;
+          }
+          if (clicked && clicked.userData.spotId) {
+            console.log("✅ Clicked spot:", clicked.userData.spotId);
+            navigate(`/spot/${clicked.userData.spotId}`);
+          }
         }
+      });
 
-        if (spotObj && spotObj.userData.spotId) {
-          console.log("✅ Clicked spot:", spotObj.userData.spotId);
-          navigate(`/spot/${spotObj.userData.spotId}`);
-        }
-      }
-    });
+      mapRef.current.hasClickListener = true;
+    }
 
-  }, [spots]);
+  }, [spots, loading]);  // ✅ reruns when spots finish loading
 
   return (
     <div

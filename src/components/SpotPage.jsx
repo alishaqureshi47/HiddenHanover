@@ -1,9 +1,10 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { useState } from 'react';
+import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { db } from '../api/firebase';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import './SpotPage.css';
+import { useSpots } from "../context/SpotsContext";  // ✅ use the context
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -13,25 +14,15 @@ import { Navigation } from 'swiper/modules';
 function SpotPage() {
   const { spotId } = useParams();
   const navigate = useNavigate();
-  const [spot, setSpot] = useState(null);
+  const { spots, setSpots } = useSpots();   // ✅ include setSpots from context
   const [uploading, setUploading] = useState(false);
 
   const storage = getStorage();
 
-  // 🔄 Fetch spot data from Firebase
-  useEffect(() => {
-    const fetchSpot = async () => {
-      const docRef = doc(db, "spots", spotId);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        setSpot(docSnap.data());
-      } else {
-        setSpot(null);
-      }
-    };
+  // 🔄 Find the spot in context
+  const spot = spots.find(s => s.id === spotId);
 
-    fetchSpot();
-  }, [spotId]);
+  if (!spot) return <p style={{ color: "black" }}>Spot not found.</p>;
 
   // 📤 Handle Image Upload
   const handleImageUpload = async (e) => {
@@ -54,11 +45,14 @@ function SpotPage() {
         images: arrayUnion(downloadURL)
       });
 
-      // ✅ Update local state so the gallery updates without refresh
-      setSpot(prev => ({
-        ...prev,
-        images: prev.images ? [...prev.images, downloadURL] : [downloadURL]
-      }));
+      // ✅ Update the global spots context so UI updates immediately
+      setSpots(prevSpots =>
+        prevSpots.map(s =>
+          s.id === spotId
+            ? { ...s, images: s.images ? [...s.images, downloadURL] : [downloadURL] }
+            : s
+        )
+      );
 
       setUploading(false);
       alert("✅ Image uploaded!");
@@ -67,8 +61,6 @@ function SpotPage() {
       setUploading(false);
     }
   };
-
-  if (spot === null) return <p style={{ color: "black" }}>Spot not found.</p>;
 
   return (
     <div className="spot-page" style={{ color: "black" }}>
