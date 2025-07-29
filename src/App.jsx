@@ -124,65 +124,70 @@ function App() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.4 }}
                 style={{
-
                   top: 0,
                   left: 0,
                   width: "100%",
                   minHeight: "100vh",
-                  zIndex: 1   // ✅ stays below Landing
+                  zIndex: 1
                 }}
               >
                 <div className="weather-bar-container">
                   <WeatherBar forecast={forecastData} />
                 </div>
 
-                <div className="effect-toggle-bar">
-                  <button 
-                    className={weather === "rain" ? "active" : ""} 
-                    onClick={() => setWeather("rain")}
-                  >
-                    🌧 Rain
-                  </button>
-
-                  <button 
-                    className={weather === "snow" ? "active" : ""} 
-                    onClick={() => setWeather("snow")}
-                  >
-                    ❄ Snow
-                  </button>
-
-                  <button 
-                    className={weather === "none" ? "active" : ""} 
-                    onClick={() => setWeather("none")}
-                  >
-                    🚫 Off
-                  </button>
-                </div>
                 
-                <div className="time-toggle-bar">
-                  <button onClick={() => setTimeOfDay("day")}>🌞 Day</button>
-                  <button onClick={() => setTimeOfDay("dawn")}>🌅 Dawn</button>
-                  <button onClick={() => setTimeOfDay("dusk")}>🌆 Dusk</button>
-                  <button onClick={() => setTimeOfDay("night")}>🌙 Night</button>
-                </div>
 
                 <div className="main-content">
                   <div className="map-wrapper">
-                    <Map weather={weather} timeOfDay={timeOfDay}/>
+                    <Map weather={weather} timeOfDay={timeOfDay} />
                   </div>
 
-                  <button
-                    className="add-spot-btn"
-                    onClick={() => setShowAdd(true)}
-                  >
-                    ➕ Add Spot
-                  </button>     
+                  <div className="map-controls">
+                    {/* 🌿 DROPDOWN CONTROLS */}
+                    {/* ⏰ Time of Day */}
+                    <div className="dropdown-group-time">
+                        <label htmlFor="timeSelect">⏰ Time of Day</label>
+                        <select
+                          id="timeSelect"
+                          onChange={(e) => setTimeOfDay(e.target.value)}
+                          value={timeOfDay}
+                        >
+                          <option value="day">🌞 Day</option>
+                          <option value="dawn">🌅 Dawn</option>
+                          <option value="dusk">🌆 Dusk</option>
+                          <option value="night">🌙 Night</option>
+                        </select>
+                    </div>
+
+                    {/* 🌦 Weather */}
+                    <div className="dropdown-group-weather">
+                      <label htmlFor="weatherSelect">🌦 Weather</label>
+                      <select
+                        id="weatherSelect"
+                        onChange={(e) => setWeather(e.target.value)}
+                        value={weather}
+                      >
+                        <option value="none">🚫 None</option>
+                        <option value="rain">🌧 Rain</option>
+                        <option value="snow">❄ Snow</option>
+                      </select>
+                    </div>
+                    <button
+                        className="add-spot-btn"
+                        onClick={() => setShowAdd(true)}
+                      >
+                        ➕ Add Spot
+                    </button>
+                  </div>
                 </div>
+
+                
 
                 {showAdd && <AddSpot onClose={() => setShowAdd(false)} />}
               </motion.div>
             }
           />
+
 
           {/* 📍 Individual Spot Page */}
           <Route path="/spot/:spotId" element={<SpotPage />} />

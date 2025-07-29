@@ -60,13 +60,19 @@ html, body, #root {
   height: 100%;
 }
 
-/* 🌿 ADD SPOT BUTTON 🌿 */
+/* 🌿 Container for dropdowns AND the button */
+.map-controls {
+  display: flex;
+  flex-direction: row;         /* ✅ dropdowns + button in one row */
+  justify-content: flex-end;   /* ✅ pushes all items to the right edge */
+  align-items: flex-end;       /* ✅ aligns button baseline nicely */
+  gap: 16px;                   /* ✅ space between each item */
+  width: 80%;                  /* ✅ same width as map */
+  margin: 10px auto 50px auto; /* ✅ keeps it aligned under weather bar */
+}
+
+/* 🌟 Make sure the Add Spot button aligns perfectly */
 .add-spot-btn {
-  display: block;
-  align-self: flex-end;        /* ✅ aligns button to map’s right edge */
-  margin-top: 10px;            /* space between map and button */
-  margin-right: 10%;           /* ✅ matches map’s right margin (80% width = 10% margins on both sides) */
-  margin-bottom: 20%;
   background: #2e7d32;
   color: white;
   padding: 12px 20px;
@@ -77,41 +83,63 @@ html, body, #root {
   font-weight: bold;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   transition: all 0.2s ease-in-out;
+
+  /* 🏗 FIXED ALIGNMENT */
+  margin: 0;                   /* ✅ removes old margins that pushed it out */
+  align-self: flex-end;        /* ✅ stays aligned with map-controls bottom */
 }
 
 .add-spot-btn:hover {
   background: #256428;
 }
 
-.effect-toggle-bar {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.9);
-  border-bottom: 1px solid #ddd;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  z-index: 50;
+
+.heading-map  {
+  color: black
 }
 
-.effect-toggle-bar button {
-  padding: 8px 14px;
+/* 📦 Each dropdown box */
+.dropdown-group-time,
+.dropdown-group-weather {
+  display: flex;
+  flex-direction: column;    /* ✅ keeps label on top of dropdown */
+  align-items: flex-start;   /* ✅ left-align the label & dropdown */
+  background: #f9f9f9;
+  padding: 6px 8px;
   border-radius: 8px;
-  border: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  font-family: 'Inter', sans-serif;
+}
+
+/* 🏷 Label styling */
+.dropdown-group-time label,
+.dropdown-group-weather label {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;        /* ✅ small space between label and dropdown */ 
+  color: #333;
+}
+
+/* 🔽 Dropdown select styling */
+.dropdown-group-time select,
+.dropdown-group-weather select {
+  padding: 4px 6px;
+  font-size: 13px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #ffffff;
   cursor: pointer;
-  font-weight: bold;
-  background: #eee;
+  width: 120px;              /* ✅ same width for both dropdowns */
   transition: background 0.2s ease;
 }
 
-.effect-toggle-bar button:hover {
-  background: #ddd;
+/* 🔽 Hover effect */
+.dropdown-group-time select:hover,
+.dropdown-group-weather select:hover {
+  background: #f1f1f1;
 }
 
-.effect-toggle-bar button.active {
-  background: #2e7d32;
-  color: white;
-}
+
 
 /* 🔽 Popup Close Button Styling 🔽 */
 .mapboxgl-popup-close-button {
