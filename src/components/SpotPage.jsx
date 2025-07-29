@@ -12,7 +12,8 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
 import SpotifyEmbed from './SpotifyEmbed';
-
+// ❌ Remove this if you're not using ConnectSpotify anymore
+// import ConnectSpotify from './ConnectSpotify';
 
 function SpotPage() {
   const { spotId } = useParams();
@@ -51,14 +52,14 @@ function SpotPage() {
         images: arrayUnion(downloadURL)
       });
 
-      // ✅ Update context
-      setSpots(prevSpots =>
-        prevSpots.map(s =>
-          s.id === spotId
-            ? { ...s, images: s.images ? [...s.images, downloadURL] : [downloadURL] }
-            : s
-        )
-      );
+      // // ✅ Update context
+      // setSpots(prevSpots =>
+      //   prevSpots.map(s =>
+      //     s.id === spotId
+      //       ? { ...s, images: s.images ? [...s.images, downloadURL] : [downloadURL] }
+      //       : s
+      //   )
+      // );
 
       setUploading(false);
       alert("✅ Image uploaded!");
@@ -88,6 +89,7 @@ function SpotPage() {
 
   return (
     <div className="spot-page" style={{ color: "black" }}>
+      
       {/* 🔙 Back Button */}
       <button onClick={() => navigate('/map')} className="back-btn">
         Back to Map
@@ -144,6 +146,8 @@ function SpotPage() {
 
       {/* 🎵 Spotify + 📓 Journal */}
       <div className="bottom-grid">
+        
+        {/* 🎵 Spotify Playlist Section */}
         <div className="spotify-section">
           <div className="spotify-header">
             <h2>🎵 Spotify Playlist</h2>
@@ -152,21 +156,16 @@ function SpotPage() {
                 className="add-playlist-btn" 
                 onClick={async () => {
                   const playlistUrl = prompt("🎵 Paste a Spotify playlist URL:");
-
                   if (playlistUrl) {
                     try {
-                      // ✅ Update Firestore
                       await updateDoc(doc(db, "spots", spotId), {
                         spotifyPlaylist: playlistUrl,
                       });
-
-                      // ✅ Update local state immediately
                       setSpots(prevSpots =>
                         prevSpots.map(s =>
                           s.id === spotId ? { ...s, spotifyPlaylist: playlistUrl } : s
                         )
                       );
-
                       alert("✅ Playlist added!");
                     } catch (err) {
                       console.error("❌ Error saving playlist:", err);
@@ -178,7 +177,6 @@ function SpotPage() {
                 +
               </button>
             )}
-            <ConnectSpotify />
           </div>
           {spot.spotifyPlaylist ? (   
             <SpotifyEmbed playlistUrl={spot.spotifyPlaylist} />
@@ -187,20 +185,46 @@ function SpotPage() {
           )}
         </div>
 
+        {/* 📓 Journal Section */}
         <div className="journal-section">
-          <h2>📓 Journal Entries</h2>
+          <div className="journal-header">
+            <h2>📓 Journal Entries</h2>
+            <button 
+              className="add-entry-btn"
+              onClick={async () => {
+                const newEntry = prompt("📝 Write your journal entry:");
+                if (newEntry) {
+                  try {
+                    await updateDoc(doc(db, "spots", spotId), {
+                      journalEntries: arrayUnion(newEntry),
+                    });
+                    alert("✅ Journal entry added!");
+                  } catch (err) {
+                    console.error("❌ Error adding journal entry:", err);
+                    alert("❌ Failed to add entry.");
+                  }
+                }
+              }}
+            >
+              ➕
+            </button>
+          </div>
+
           {spot.journalEntries && spot.journalEntries.length > 0 ? (
-            spot.journalEntries.map((entry, idx) => (
-              <div key={idx} className="journal-entry">
-                <p>{entry}</p>
-              </div>
-            ))
+            <div className="journal-list">
+              {spot.journalEntries.map((entry, idx) => (
+                <div key={idx} className="journal-entry">
+                  <p>{entry}</p>
+                </div>
+              ))}
+            </div>
           ) : (
             <p>No journal entries yet.</p>
           )}
         </div>
       </div>
 
+      {/* 👤 Owner Info */}
       <div className="owner-info">
         {spot.ownerName && (
           <p className="spot-owner">

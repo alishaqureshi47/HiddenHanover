@@ -112,3 +112,42 @@ html, body, #root {
   background: #2e7d32;
   color: white;
 }
+
+/* 🔽 Popup Close Button Styling 🔽 */
+.mapboxgl-popup-close-button {
+  font-size: 12px !important;   /* makes the "×" smaller */
+  top: 4px !important;          /* bring it closer to the edge */
+  right: 6px !important;
+  padding: 0 !important;
+  line-height: 12px !important;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8);
+  color: #333;
+  cursor: pointer;
+}
+
+/* Optional: hover effect for subtle feedback */
+.mapboxgl-popup-close-button:hover {
+  background: rgba(240, 240, 240, 1);
+}
+
+.mapboxgl-popup-content {
+  padding: 10px;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+}
+
+.spot-popup h3 {
+  color: black;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.spot-popup p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #666;
+}

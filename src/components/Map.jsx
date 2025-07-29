@@ -7,7 +7,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { useNavigate } from 'react-router-dom';
 import { Threebox } from 'threebox-plugin';
 import 'threebox-plugin/dist/threebox.css';
-import { useSpots } from "../context/SpotsContext";  // ✅ using global spots context
+import { useSpots } from "../context/SpotsContext";  
 import * as THREE from "three"; 
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
@@ -16,8 +16,6 @@ function Map({ weather, timeOfDay }) {
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
   const navigate = useNavigate();
-
-  // ✅ Spots pulled from context
   const { spots, loading } = useSpots();
 
   /*---- initialize map ----*/
@@ -29,7 +27,8 @@ function Map({ weather, timeOfDay }) {
       zoom: 16,
       pitch: 60,
       bearing: 20,
-      antialias: true
+      antialias: true,
+      cooperativeGestures: true
     });
 
     mapRef.current = map;
@@ -56,51 +55,34 @@ function Map({ weather, timeOfDay }) {
       });
     });
 
-    // ✅ Cleanup when component unmounts
-    return () => map.remove();
+    return () => {
+      if (window.tb) {
+        // 🧹 clean up Threebox when leaving map
+        window.tb.dispose();
+        window.tb = null;
+      }
+      map.remove();
+    };
   }, []);
 
   /*---- watch for weather changes ----*/
   useEffect(() => { 
     if (!mapRef.current) return;
     const map = mapRef.current;
-
     if (!map.isStyleLoaded()) {
-      map.once("styledata", () => {
-        applyWeather(map, weather);
-      });
+      map.once("styledata", () => applyWeather(map, weather));
     } else {
       applyWeather(map, weather);
     }
   }, [weather]);
 
-  /*---- helper to apply weather ----*/
   const applyWeather = (map, weather) => {
     map.setRain(null);
     map.setSnow(null);
-
     if (weather === "rain") {
-      map.setRain({
-        density: 0.5,
-        intensity: 1.0,
-        color: '#a8adbc',
-        opacity: 0.7,
-        vignette: 1.0,
-        'vignette-color': '#464646',
-        direction: [0, 80],
-        'droplet-size': [2.6, 18.2],
-        'distortion-strength': 0.7,
-        'center-thinning': 0
-      });
+      map.setRain({ density: 0.5, intensity: 1.0, color: '#a8adbc', opacity: 0.7 });
     } else if (weather === "snow") {
-      map.setSnow({
-        density: 0.5,
-        intensity: 0.9,
-        color: '#ffffff',
-        opacity: 0.9,
-        'flake-size': 5,
-        'distortion-strength': 0.2
-      });
+      map.setSnow({ density: 0.5, intensity: 0.9, color: '#ffffff', opacity: 0.9 });
     }
   };
 
@@ -111,45 +93,40 @@ function Map({ weather, timeOfDay }) {
     }
   }, [timeOfDay]);
 
-  /*---- add 3D models whenever spots load OR when coming back ----*/
+  /*---- add & refresh 3D models whenever spots load ----*/
   useEffect(() => {
     if (!mapRef.current) return;
-    if (loading) {
-      console.log("⏳ Waiting for spots...");
-      return;
-    }
+    if (loading) return;
 
-    if (spots.length === 0) {
-      console.warn("⚠️ No spots found.");
-      return;
-    }
-
-    console.log(`✅ Loading ${spots.length} spots onto the map.`);
     const map = mapRef.current;
 
-    // ✅ Ensure Threebox exists for this map instance
+    // ✅ Ensure Threebox exists
     if (!window.tb) {
       window.tb = new Threebox(map, map.getCanvas().getContext('webgl'), { defaultLights: true });
     }
 
+    // 🧹 Clear existing models before adding new ones
+    if (window.tb.world.children.length > 0) {
+      window.tb.world.children
+        .filter(obj => obj.userData?.spotId) // only remove spots, not lights
+        .forEach(obj => window.tb.remove(obj));
+    }
+
     const clickableModels = [];
+    const popup = new mapboxgl.Popup({ closeButton: true, closeOnClick: true });
 
     spots.forEach((spot) => {
-      if (!spot.location?.latitude || !spot.location?.longitude) {
-        console.warn(`⚠️ Skipping ${spot.name || spot.id} — no location data`);
-        return;
-      }
+      if (!spot.location?.latitude || !spot.location?.longitude) return;
 
-      const scale = 0.1;
+      const scale = spot.scale || 0.1;
       const options = {
         obj: spot.obj,
         type: "glb",
-        scale: spot.scale || { x: scale, y: scale, z: scale },
+        scale: { x: scale, y: scale, z: scale },
         rotation: spot.rotation || { x: 90, y: -90, z: 0 },
         units: "meters"
       };
 
-      // ✅ Load the model for each spot
       window.tb.loadObj(options, (model) => {
         model.setCoords([spot.location.longitude, spot.location.latitude]);
         model.userData.spotId = spot.id;
@@ -158,7 +135,7 @@ function Map({ weather, timeOfDay }) {
       });
     });
 
-    // ✅ Raycasting for spot clicks (only set up once)
+    // ✅ Raycasting for clicks
     if (!mapRef.current.hasClickListener) {
       const raycaster = new THREE.Raycaster();
       const mouse = new THREE.Vector2();
@@ -177,16 +154,42 @@ function Map({ weather, timeOfDay }) {
             clicked = clicked.parent;
           }
           if (clicked && clicked.userData.spotId) {
-            console.log("✅ Clicked spot:", clicked.userData.spotId);
-            navigate(`/spot/${clicked.userData.spotId}`);
+            const clickedSpot = spots.find(s => s.id === clicked.userData.spotId);
+            if (!clickedSpot) return;
+
+            // 🎯 Fly to the clicked spot
+            map.flyTo({
+              center: [clickedSpot.location.longitude, clickedSpot.location.latitude],
+              zoom: 18,
+              speed: 1.2,
+              curve: 1.2,
+              essential: true
+            });
+
+            // 📍 Show popup with close button + name
+            popup
+              .setLngLat([clickedSpot.location.longitude, clickedSpot.location.latitude])
+              .setHTML(`
+                <div class="spot-popup">
+                  <h3>${clickedSpot.name}</h3>
+                  <p>Click to open</p>
+                </div>
+              `)
+              .addTo(map);
+
+            // ✅ Clicking popup content (not the close X) navigates
+            popup.getElement().addEventListener("click", (e) => {
+              if (!e.target.closest(".mapboxgl-popup-close-button")) {
+                navigate(`/spot/${clickedSpot.id}`);
+              }
+            });
           }
         }
       });
 
       mapRef.current.hasClickListener = true;
     }
-
-  }, [spots, loading]);  // ✅ reruns when spots finish loading
+  }, [spots, loading]);
 
   return (
     <div

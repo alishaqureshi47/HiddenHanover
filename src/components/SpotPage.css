@@ -1,4 +1,3 @@
-
 /* 🌿 Main page styling */
 .spot-page {
   padding: 30px;
@@ -18,8 +17,8 @@
   font-weight: bold;
   margin-bottom: 20px;
   cursor: pointer;
-  float: right;            /* ✅ pushes it to the right */
-  margin: 10px 0 20px 20px; /* ✅ spacing from edges */
+  float: right;            
+  margin: 10px 0 20px 20px; 
 }
 
 /* 📍 Title */
@@ -40,7 +39,7 @@
 /* 🔲 Title + Add Image aligned */
 .gallery-header {
   display: flex;
-  justify-content: space-between;  /* ✅ pushes Add Image to the right */
+  justify-content: space-between;  
   align-items: center;
   margin-bottom: 10px;
 }
@@ -66,11 +65,10 @@
   background: #b9e542;
 }
 
-
 /* ✅ Swiper carousel */
 .gallery-swiper {
   width: 100%;
-  max-width: 900px;       /* ✅ keeps it centered */
+  max-width: 900px;       
   height: auto;
   margin: 15px 0;
   border: 2px solid black;
@@ -80,13 +78,12 @@
 
 .gallery-swiper img {
   width: 100%;
-  max-height: 600px;      /* ✅ allows images to be tall */
-  object-fit: contain;    /* ✅ no cropping, keeps full image */
+  max-height: 600px;      
+  object-fit: contain;    
   border-radius: 10px;
   margin: 15px auto; 
-  background-color: lightgoldenrodyellow; /* ✅ adds white padding behind smaller images */
+  background-color: lightgoldenrodyellow; 
 }
-
 
 /* ✅ Placeholder when no images */
 .gallery-placeholder {
@@ -149,15 +146,62 @@
   border-radius: 12px;
   min-height: 280px;
   border: 2px solid black;
+
+  display: flex;
+  flex-direction: column;
 }
 
-/* 📓 Individual journal entry */
+.journal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.add-entry-btn {
+  background-color: #2e7d32;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.add-entry-btn:hover {
+  background-color: #256628;
+}
+
 .journal-entry {
-  background: #f7f7f7;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  border-left: 4px solid #2e7d32;
+  background: #f9f9f9;
+  padding: 8px;
+  margin: 6px 0;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+/* ✅ NEW: Journal list scrollable */
+.journal-list {
+  max-height: 250px;   /* keeps box size fixed */
+  overflow-y: auto;    /* scrolls when too many entries */
+  padding-right: 5px;
+
+  flex-grow: 1;
+  max-height: 350px;
+  overflow-y: auto;
+
+  margin-top: 10px;
+}
+
+/* Optional prettier scrollbar */
+.journal-list::-webkit-scrollbar {
+  width: 6px;
+}
+.journal-list::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
 }
 
 /* 📤 Upload button styling */
@@ -181,14 +225,16 @@
   margin-bottom: 10px;
   color: black;
 }
+
+/* ℹ️ Owner info section */
 .owner-info {
   display: flex;
-  align-items: center;        /* keeps everything vertically aligned */
-  justify-content: space-between;  /* pushes toggle to the far right */
-  padding: 10px 16px;         /* nice breathing space around */
-  margin-bottom: 12px;        /* space below this section */
-  background: #fafafa;        /* subtle background to separate it */
-  border-radius: 8px;         /* slight rounding for a softer look */
+  align-items: center;        
+  justify-content: space-between;  
+  padding: 10px 16px;         
+  margin-bottom: 12px;        
+  background: #fafafa;        
+  border-radius: 8px;         
 }
 
 /* text styling */

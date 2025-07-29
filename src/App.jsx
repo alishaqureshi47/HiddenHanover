@@ -87,7 +87,6 @@ function App() {
       
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
-          <Route path="/callback" element={<SpotifyCallback />} />
 
           <Route path="/login" element={<Login />} />
           
