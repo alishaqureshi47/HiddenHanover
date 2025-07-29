@@ -2,7 +2,7 @@
 .landing-page {
   height: 100vh;
   width: 100%;
-  background-image: url('/images/landing-bg.jpg'); /* ✅ from public/images */
+  background-image: url('https://firebasestorage.googleapis.com/v0/b/hidden-hanover-dali-app.firebasestorage.app/o/landing-bg.jpg?alt=media&token=387a84fe-1938-4c2e-9d3e-98a37d3c6084'); /* ✅ from public/images */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
