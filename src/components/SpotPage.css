@@ -17,8 +17,8 @@
   font-weight: bold;
   margin-bottom: 20px;
   cursor: pointer;
-  float: right;            
-  margin: 10px 0 20px 20px; 
+  float: right;
+  margin: 10px 0 20px 20px;
 }
 
 /* 📍 Title */
@@ -39,7 +39,7 @@
 /* 🔲 Title + Add Image aligned */
 .gallery-header {
   display: flex;
-  justify-content: space-between;  
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
 }
@@ -52,15 +52,16 @@
 
 /* 🎯 Add Image button */
 .upload-btn {
+  display: inline-block;
   background: #d3ff57;
-  padding: 6px 12px;
+  padding: 10px 15px;
   border: 2px solid black;
-  border-radius: 6px;
-  font-weight: bold;
+  border-radius: 8px;
+  margin-bottom: 15px;
   cursor: pointer;
+  font-weight: bold;
   color: black;
 }
-
 .upload-btn:hover {
   background: #b9e542;
 }
@@ -68,21 +69,19 @@
 /* ✅ Swiper carousel */
 .gallery-swiper {
   width: 100%;
-  max-width: 900px;       
-  height: auto;
+  max-width: 900px;
   margin: 15px 0;
   border: 2px solid black;
   background: lightgoldenrodyellow;
   border-radius: 10px;
 }
-
 .gallery-swiper img {
   width: 100%;
-  max-height: 600px;      
-  object-fit: contain;    
+  max-height: 600px;
+  object-fit: contain;
   border-radius: 10px;
-  margin: 15px auto; 
-  background-color: lightgoldenrodyellow; 
+  margin: 15px auto;
+  background-color: lightgoldenrodyellow;
 }
 
 /* ✅ Placeholder when no images */
@@ -107,73 +106,54 @@
   margin-top: 30px;
 }
 
-/* 🎵 Spotify Section */
-.spotify-section {
-  background: white;
-  padding: 15px;
-  border-radius: 12px;
-  min-height: 280px;
-  border: 2px solid black;
-}
-
-.spotify-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.add-playlist-btn {
-  background-color: #1db954;
-  color: white;
-  font-size: 20px;
-  font-weight: bold;
-  width: 32px;
-  height: 32px;
-  border-radius: 2px;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.add-playlist-btn:hover {
-  background-color: #17a44d;
-}
-
-/* 📓 Journal Section */
+/* 🎵 Spotify Section & 📓 Journal Section */
+.spotify-section,
 .journal-section {
   background: white;
   padding: 15px;
   border-radius: 12px;
   min-height: 280px;
   border: 2px solid black;
-
   display: flex;
   flex-direction: column;
 }
 
+/* Headers for both sections */
+.spotify-header,
 .journal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  line-height: 1;
 }
 
+/* ✅ Plus Buttons (both Spotify + Journal) */
+.add-playlist-btn,
 .add-entry-btn {
-  background-color: #2e7d32;
-  color: white;
-  font-size: 18px;
+  background-color: #85974E;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
   font-weight: bold;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
   border: none;
   cursor: pointer;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
   transition: background-color 0.2s ease;
 }
-
+.add-playlist-btn:hover,
 .add-entry-btn:hover {
   background-color: #256628;
 }
 
+/* 📓 Journal Entry Styling */
 .journal-entry {
   background: #f9f9f9;
   padding: 8px;
@@ -182,20 +162,13 @@
   border: 1px solid #ddd;
 }
 
-/* ✅ NEW: Journal list scrollable */
+/* ✅ Journal list scrollable */
 .journal-list {
-  max-height: 250px;   /* keeps box size fixed */
-  overflow-y: auto;    /* scrolls when too many entries */
-  padding-right: 5px;
-
-  flex-grow: 1;
   max-height: 350px;
   overflow-y: auto;
-
+  padding-right: 5px;
   margin-top: 10px;
 }
-
-/* Optional prettier scrollbar */
 .journal-list::-webkit-scrollbar {
   width: 6px;
 }
@@ -204,42 +177,22 @@
   border-radius: 3px;
 }
 
-/* 📤 Upload button styling */
-.upload-btn {
-  display: inline-block;
-  padding: 10px 15px;
-  background: #d3ff47;
-  border: 2px solid black;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.upload-btn:hover {
-  background: #c4f23c;
-}
-
-.uploading-text {
-  font-style: italic;
-  margin-bottom: 10px;
-  color: black;
-}
-
 /* ℹ️ Owner info section */
 .owner-info {
   display: flex;
-  align-items: center;        
-  justify-content: space-between;  
-  padding: 10px 16px;         
-  margin-bottom: 12px;        
-  background: #fafafa;        
-  border-radius: 8px;         
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  margin-bottom: 12px;
+  background: #E0D29B;
+
+  border-radius: 8px;
 }
 
 /* text styling */
 .spot-owner {
-  margin: 0;
+  padding-top: 10px;
+  margin-top: 10px;
   font-size: 1rem;
   font-weight: 400;
   color: #222;
@@ -257,7 +210,6 @@
   cursor: pointer;
   transition: all 0.2s ease-in-out;
 }
-
 .privacy-toggle:hover {
   border: 1px solid #53983d;
   background: #e4e4e4;

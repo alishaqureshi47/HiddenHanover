@@ -204,7 +204,7 @@ function AddSpot({ onClose }) {
           </div>
 
           <div className="form-buttons">
-            <button type="submit" className="submit-btn">✅ Add Spot</button>
+            <button type="submit" className="submit-btn">☑️ Add Spot</button>
             <button type="button" className="cancel-btn" onClick={onClose}>Cancel</button>
           </div>
         </form>

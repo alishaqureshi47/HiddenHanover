@@ -19,7 +19,6 @@ function Header({ user }) {
       <div className="header-left">
         <span className="logo">🌿</span>
         <h1 className="site-title">Hidden Hanover</h1>
-        <span className="logo">🌿</span>
       </div>
 
       {/* 👤 Profile */}

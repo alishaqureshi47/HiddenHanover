@@ -20,7 +20,7 @@ export default function Login() {
     <div className="login-container">
       {/* 🌿 Logo/Header */}
       <div className="login-card">
-        <h1 className="login-title">🌿 Hidden Hanover 🌿</h1>
+        <h1 className="login-title">Hidden Hanover</h1>
         <p className="login-subtitle">Sign in to explore secret spots around Hanover.</p>
 
         {/* 🔘 Google Login Button */}

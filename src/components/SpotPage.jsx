@@ -206,7 +206,7 @@ function SpotPage() {
                 }
               }}
             >
-              ➕
+              ＋
             </button>
           </div>
 

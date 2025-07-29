@@ -1,61 +1,83 @@
-/* 🌿 Full-screen center */
+/* 🌿 LOGIN PAGE STYLING 🌿 */
+
+/* ✅ Fullscreen container */
 .login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: relative;
   height: 100vh;
-  background: #f7f7f7;
-  font-family: 'Inter', sans-serif;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* 🌄 Same background image as landing page */
+  background: #85974E;
 }
 
-/* 📦 Login card */
+/* 🌫️ Dark overlay to dim the background */
+.login-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.55); /* ✅ dim amount — adjust opacity (0.55 is good balance) */
+  z-index: 1;
+}
+
+/* ✅ Card container */
 .login-card {
-  text-align: center;
-  background: white;
+  position: relative;
+  z-index: 2; /* ensure it’s above the overlay */
+  background: rgba(255, 255, 255, 0.9);
   padding: 40px;
-  border-radius: 14px;
-  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  text-align: center;
   width: 360px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  transform: translateY(-70px);
+
 }
 
-/* 🌿 Title */
+/* ✅ Title */
 .login-title {
   font-size: 2rem;
+  font-weight: bold;
+  color: #3A3D3C;
   margin-bottom: 10px;
-  color: #2e7d32;
 }
 
-/* ✏ Subtitle */
+/* ✅ Subtitle */
 .login-subtitle {
   font-size: 1rem;
-  color: #444;
-  margin-bottom: 25px;
+  color: #555;
+  margin-bottom: 20px;
 }
 
-/* 🔘 Google button */
+/* 🔘 Google Button */
 .google-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  width: 100%;
-  padding: 12px;
   background: white;
+  color: #333;
   border: 1px solid #ccc;
+  padding: 12px;
   border-radius: 8px;
   font-size: 1rem;
-  font-weight: bold;
-  color: #555;
+  font-weight: 500;
   cursor: pointer;
-  transition: 0.2s ease-in-out;
+  transition: all 0.2s ease;
+  width: 100%;
 }
 
 .google-btn:hover {
-  background: #f0f0f0;
+  background: #f1f1f1;
 }
 
-/* 🎯 Google icon */
+/* 🖼 Google Logo */
 .google-icon {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
 }

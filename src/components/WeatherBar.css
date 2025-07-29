@@ -32,9 +32,12 @@
 }
 
 .forecast-card {
-  background-color: rgba(141, 170, 131, 0.1);
+  background-color: #E0D29B;
+
   padding: 1rem;
   border-radius: 1rem;
+  border-radius: 1px;
+  border-color: black;
   text-align: center;
   min-width: 140px;
   flex-shrink: 0;
@@ -45,6 +48,8 @@
 .forecast-card {
   padding: 0.75rem;
   border-radius: 1rem;
+  border: 2px solid black;
+  background-color: lightgoldenrodyellow;
 }
 
 .today-card img,

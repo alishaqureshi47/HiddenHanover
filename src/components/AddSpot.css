@@ -90,7 +90,7 @@
 .add-spot-form input:focus,
 .add-spot-form textarea:focus,
 .add-spot-form select:focus {
-  border-color: #2e7d32;
+  border-color: #85974E;
   box-shadow: 0 0 4px rgba(46, 125, 50, 0.5);
   outline: none;
 }
@@ -102,7 +102,7 @@
 
 /* Custom file upload button */
 .file-upload-btn {
-  background-color: #2e7d32;
+  background-color: #85974E;
   color: white;
   padding: 10px 16px;
   border-radius: 8px;
@@ -217,7 +217,7 @@
 }
 
 .submit-btn {
-  background-color: #2ecc71;
+  background-color: #85974E;
   color: white;
 }
 
