@@ -1,58 +1,98 @@
-.landing-container {
+/* 🌿 Full-page background */
+.landing-page {
   height: 100vh;
   width: 100%;
-  background: #f0fff4;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  background-image: url('/images/landing-bg.jpg'); /* ✅ from public/images */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   overflow: hidden;
 }
 
+/* 🌿 Optional dark overlay for readability */
+.landing-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.35); /* ✅ slightly darkens background */
+  z-index: 1;
+}
+
+/* 🌿 Content sits above overlay */
+.landing-content {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  padding: 20px;
+  transform: translateY(-70px);
+}
+
+/* 🌿 Title styling */
 .landing-title {
-  font-size: 4rem;
-  font-weight: bold;
-  color: #22543d;
+  font-size: 3.5rem;
+  font-weight: 700;
   margin-bottom: 10px;
-  text-align: center;
+  text-shadow: 0px 3px 8px rgba(0, 0, 0, 1);
 }
 
+/* 🌿 Subtitle styling */
 .landing-subtitle {
-  font-size: 1.5rem;
-  color: #2f855a;
+  font-size: 1.4rem;
   margin-bottom: 30px;
-  text-align: center;
+  opacity: 0.9;
+  text-shadow: 0px 3px 8px rgba(0, 0, 0, 1);
+
 }
 
+/* 🌿 Explore button */
 .explore-btn {
-  padding: 15px 30px;
-  font-size: 1.2rem;
-  background: #38a169;
+  background: #2e7d32;
   color: white;
+  padding: 14px 28px;
+  font-size: 1.2rem;
+  font-weight: bold;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: 0.3s ease;
+  box-shadow: 0px 5px 12px rgba(0, 0, 0, 2);
+  transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .explore-btn:hover {
-  background: #2f855a;
+  background: #256428;
+  transform: translateY(-3px);
 }
 
-/* 🍃 Decorative leaves */
+/* 🌿 Floating leaves */
 .leaf {
   position: absolute;
-  font-size: 5rem;
-  opacity: 0.2;
+  font-size: 2rem;
+  z-index: 2;
+  animation: float 6s ease-in-out infinite;
 }
 
 .leaf-left {
-  top: 10%;
-  left: 5%;
+  top: 20px;
+  left: 30px;
+  animation-delay: 0s;
 }
 
 .leaf-right {
-  bottom: 10%;
-  right: 5%;
+  bottom: 20px;
+  right: 30px;
+  animation-delay: 3s;
+}
+
+/* 🌿 Leaf float animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(15px); }
 }

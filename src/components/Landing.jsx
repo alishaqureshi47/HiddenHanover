@@ -12,31 +12,22 @@ function Landing() {
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: "-100%", opacity: 1 }}
       transition={{ duration: 0.4, ease: "easeInOut" }}
-      style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        background: "#f9f9f9",
-        zIndex: 10
-      }}
+      className="landing-page"
     >
-      <div className="landing-container">
-        <div className="leaf leaf-left">🍃</div>
-        <div className="leaf leaf-right">🍃</div>
 
-        <div className="landing-content">
-          <h1 className="landing-title">🌿 Hidden Hanover 🌿</h1>
-          <p className="landing-subtitle">Discover the secret spots around Hanover</p>
+      {/* 🌿 Landing content */}
+      <div className="landing-content">
+        <h1 className="landing-title">Hidden Hanover</h1>
+        <p className="landing-subtitle">
+          Discover the hidden gems of Hanover
+        </p>
 
-          <button
-            className="explore-btn"
-            onClick={() => navigate("/login")}   // ✅ takes user to Login page
-          >
-            Login with Google →
-          </button>
-        </div>
+        <button
+          className="explore-btn"
+          onClick={() => navigate("/login")}
+        >
+          Login with Google →
+        </button>
       </div>
     </motion.div>
   );
