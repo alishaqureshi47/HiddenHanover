@@ -1,120 +1,121 @@
-# 🌿 Hidden Hanover
+# Hidden Hanover
 
-Hidden Hanover is a React-based interactive map app that lets users explore cozy, lesser-known spots around Hanover and the Dartmouth campus. Each location is marked on a beautiful custom Mapbox map and paired with a curated Spotify playlist. The app also features a live weather bar that displays the current weather and a short-term forecast using real-time weather data.
+## Overview
 
-Whether you're a student looking for a new place to unwind, a visitor exploring the town, or just curious about Hanover’s hidden charm — this app is your whimsical guide.
+**Hidden Hanover** is an interactive web app that turns Dartmouth and Hanover into a **digital 3D journal**. It’s a place to discover hidden corners, read and write memories, add music, and see the map respond to weather and time of day.
+
+This project began with a simple love: maps. I’ve always loved wandering, finding hidden places, and just being in nature when I need to “touch some grass.” The real spark came when I visited **Nathan’s Garden** for the first time. I was stunned that so many people didn’t even know it existed — and even more stunned to find a notebook there, filled with handwritten entries from visitors. It felt special, intimate, and I thought:
+
+> *“What if every secret spot had a place for stories like this? What if that journal was digital, and the whole map became alive with these moments?”*
+
+Hidden Hanover is my answer to that question.
 
 ---
 
-## 🔗 Live Demo
+## Features
 
-Coming soon: [https://your-deployment-link.com](https://your-deployment-link.com)
+* **Interactive Map** – Built with Mapbox GL JS, the map isn’t just a static view: it’s a canvas for discovery.
+* **Dynamic Weather & Time** – The map visually responds to rain, snow, and daylight changes. For demo purposes, there’s even a toggle to simulate conditions.
+* **Add Your Own Spots** – Users can mark places, name them, and decide if they stay private or go public for others to see.
+* **Community Journal** – Each spot has a page where anyone can add journal entries, share photos, and leave their own memories.
+* **Spotify Integration** – Each location can have an associated playlist to set the mood.
+* **Live Weather Forecast** – Displays current conditions and upcoming weather for Hanover so explorers know what to expect.
 
 ---
 
-## 🌤 Features
+## Why I Built This
 
-- 📍 **Interactive Map:** Centered on Hanover, with custom markers for curated spots.
-- 🎵 **Spotify Integration:** Each location includes a unique playlist to match the vibe.
-- 🌦️ **Weather Bar:** Current weather and upcoming forecasts, displayed in a stylish UI.
-- 📱 **Responsive Design:** Works across screen sizes, scrolls elegantly, and feels smooth.
+I’ve been meaning to build this app for a long time. Every time I found a tucked-away garden or quiet corner on campus, I’d think:
+
+* *“Why doesn’t everyone know about this?”*
+* *“Why can’t there be one place where these spots — and the stories behind them — live?”*
+
+This project is personal. It’s not just a technical exercise; it’s about making a **map that feels alive** and **building something I wish existed** when I first came here.
 
 ---
 
 ## Tech Stack
 
-### Frontend
+* **Frontend:** React (with Vite)
+* **Mapping:** Mapbox GL JS (switched from Google Maps for more flexibility and better design)
+* **Backend:** Firebase Firestore (spot data, journal entries), Firebase Storage (images)
+* **Auth:** Firebase Authentication (Google Sign-In)
+* **APIs:**
 
-- React.js
-- Mapbox GL JS (interactive maps and markers)
-- CSS Modules (custom styling)
-- HTML5
-
-### APIs Used
-
-- **Mapbox API:** For rendering the interactive map and placing custom markers.
-- **WeatherAPI.com Forecast API:** For real-time and forecasted weather data.
-- *(Spotify API planned but not fully integrated yet — currently using static playlist links.)*
+  * Mapbox API (interactive map and styling)
+  * Weather API (current conditions + forecast)
+  * Spotify API (playlist integration for each spot)
+* **Hosting:** Firebase Hosting
 
 ---
+
+## Learning Journey & Challenges
+
+This was my **first time building an app solo** from scratch. That made it both overwhelming and deeply rewarding.
+
+**What I learned:**
+
+* How to stitch together **multiple APIs** and have them talk to each other.
+* How to take a rough idea (“a digital journal of hidden places”) and actually turn it into a working product.
+* How to structure and deploy a full app, from front-end React components to Firebase hosting.
+
+**What challenged me most:**
+
+* **Google Maps vs. Mapbox:** I started with Google Maps, but it didn’t give me enough flexibility — and it didn’t look great. Discovering Mapbox was like opening a door. Suddenly, I could design the map to feel like I wanted.
+* **CORS errors & authentication headaches:** Some APIs didn’t play nice at first. I spent a lot of time troubleshooting tokens, headers, and browser complaints.
+* **Building alone:** Every bug, every broken feature was mine to untangle. But every fix — every moment it finally worked — felt incredible.
+
+---
+
+## How It Works
+
+1. **Explore the Map** – Start on the Mapbox-powered map and see Hanover laid out in 3D.
+2. **Add a Spot** – Click to mark your own hidden place, write a description, upload photos, and even link a playlist.
+3. **Share or Keep Private** – You can make a spot public for the world or keep it to yourself.
+4. **Leave a Journal Entry** – Spots act like digital notebooks; anyone can add a note, reflection, or memory.
+5. **Watch the Weather Shape the Map** – Rain or snow? The map shows it, and the vibe changes instantly.
+
+---
+
+## The Bigger Picture
+
+This started as a personal project, but it could easily grow. Imagine:
+
+* Dartmouth students using it to **share their favorite corners of campus.**
+* Visitors discovering places they’d never find on their own.
+* A living, ever-growing **map of memories** for Hanover.
+
+---
+
+## Deployment
+
+The app is hosted on **Firebase Hosting** and connected to Firebase Firestore for storage. *https://hidden-hanover-dali-app.web.app*
+
+---
+
+## Next Steps
+
+* Add **directions and navigation** to help users find each spot.
+* Expand **weather triggers** for more natural responses (fog, sunset lighting).
+* Build a **mobile app version** for quick, on-the-go exploring.
+
+---
+
+## Closing Thoughts and A Few Picture of the Journey
+
+Building Hidden Hanover taught me more than just code. It taught me how much I love projects that **mean something to me** — projects that mix technology with a personal spark.
 
 ## Screenshots
 
-to be uploaded
+![initial-sketch-1](/images/Image.jpeg)
+![initial-sketch-2](/images/Image 2.jpeg)
+![initial-sketch-3](/images/Image 3.jpeg)
+![initial-sketch-4](/images/Image 4.jpeg)
+![initial-sketch-5](/images/Image 5.jpeg)
+![initial-sketch-6](/images/Image 6.jpeg)
 
----
+![early-looks-1](/images/Screenshot 2025-07-28 at 2.29.52 AM.png)
+![early-looks-2](/images/Screenshot 2025-07-24 at 7.01.41 PM (2).png)
+![early-looks-3](/images/Screenshot 2025-07-27 at 11.22.23 PM (3).png)
 
-## Setup Instructions
 
-To run this project locally:
-
-1. **Clone the repository:**
-
-```bash
-git clone https://github.com/yourusername/hidden-hanover.git
-cd hidden-hanover
-````
-
-2. **Install dependencies:**
-
-```bash
-npm install
-```
-
-3. **Set environment variables:**
-
-Create a `.env` file in the root directory and add:
-
-```
-VITE_MAPBOX_ACCESS_TOKEN=your_mapbox_token
-VITE_WEATHER_API_KEY=your_weatherapi_key
-```
-
-4. **Start the development server:**
-
-```bash
-npm run dev
-```
-
-5. Visit [http://localhost:5173](http://localhost:5173) in your browser.
-
----
-
-## ✨ Learning Journey
-
-### What inspired this project?
-
-This app started as a way to document and share Dartmouth’s best-kept secrets — the hidden benches, scenic turns, and quiet thinking spots that often go unnoticed. I wanted to create something that felt **personal**, **explorable**, and **immersive**.
-
-### Potential Impact
-
-This could evolve into a crowd-sourced community map where students and locals can add their own favorite spots. It could foster a deeper connection with the local landscape and build a digital memory of the town. Future ideas include a mood tracker, journaling prompts for locations, or community playlists.
-
-### New Technologies Learned
-
-* **Mapbox GL JS** — For dynamic, fully interactive maps
-* **WeatherAPI Forecast API** — For fetching and displaying structured weather data
-* **React State Management & Effects** — For dynamic UI updates and asynchronous data
-
-### Why These Tools?
-
-* **Mapbox** gave me complete control over styling and interactivity — more flexible than Google Maps.
-* **WeatherAPI** provided simpler, cleaner forecast data compared to OpenWeather.
-* **React** allowed me to modularize the map, weather, and layout components cleanly.
-
-### Challenges & Lessons
-
-* Getting Mapbox to display markers and popups the way I wanted took some trial and error.
-* Styling the weather forecast to look compact and scrollable (but not overflow the page) took lots of CSS tweaking.
-* Initially used OpenWeatherMap but switched due to inconsistent results — learned the value of choosing the right API early.
-* Making sure the weather bar didn't break layout taught me a lot about Flexbox and overflow handling.
-
----
-
-## Things left to do
-
-* Add location submission functionality so users can suggest their own hidden gems.
-* Build a backend using Firebase to store locations dynamically.
-* Enable login and user-specific playlists or journal notes.
-
-MADE BY ALISHA QURESHI | DARTMOUTH '28
