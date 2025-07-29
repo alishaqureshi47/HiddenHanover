@@ -107,6 +107,8 @@ Building Hidden Hanover taught me more than just code. It taught me how much I l
 
 ## Screenshots
 
+can be found in images folder
+
 ![initial-sketch-1](/images/Image.jpeg)
 ![initial-sketch-2](/images/Image 2.jpeg)
 ![initial-sketch-3](/images/Image 3.jpeg)
@@ -118,4 +120,6 @@ Building Hidden Hanover taught me more than just code. It taught me how much I l
 ![early-looks-2](/images/Screenshot 2025-07-24 at 7.01.41 PM (2).png)
 ![early-looks-3](/images/Screenshot 2025-07-27 at 11.22.23 PM (3).png)
 
+
+MADE BY ALISHA QURESHI | DARTMOUTH '28
 
